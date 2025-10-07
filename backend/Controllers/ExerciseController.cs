@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using backend.Mappers;
 
 namespace backend.Controllers
 {
@@ -28,10 +29,10 @@ namespace backend.Controllers
             {
                 return NotFound();
             }
-            
-            return Ok(exercises);
+
+            var exerciseDtos = exercises.Select(e => e.ToExerciseDto()).ToList();   
+
+            return Ok(exerciseDtos);
         }
-
-
     }
 }
