@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Data;
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251008185025_fixDateTime")]
+    partial class fixDateTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,31 +44,6 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Exercises");
-                });
-
-            modelBuilder.Entity("backend.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("backend.Models.Workout", b =>
@@ -96,7 +74,13 @@ namespace backend.Migrations
                     b.Property<int>("ExerciseId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("Reps")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Sets")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Weight")
                         .HasColumnType("integer");
 
                     b.HasKey("WorkoutId", "ExerciseId");
@@ -104,39 +88,6 @@ namespace backend.Migrations
                     b.HasIndex("ExerciseId");
 
                     b.ToTable("WorkoutExercises");
-                });
-
-            modelBuilder.Entity("backend.Models.WorkoutExerciseSet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsWarmUp")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Reps")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Weight")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("WorkoutExerciseExerciseId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("WorkoutExerciseId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("WorkoutExerciseWorkoutId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkoutExerciseWorkoutId", "WorkoutExerciseExerciseId");
-
-                    b.ToTable("WorkoutExerciseSets");
                 });
 
             modelBuilder.Entity("backend.Models.WorkoutExercise", b =>
@@ -158,17 +109,6 @@ namespace backend.Migrations
                     b.Navigation("Workout");
                 });
 
-            modelBuilder.Entity("backend.Models.WorkoutExerciseSet", b =>
-                {
-                    b.HasOne("backend.Models.WorkoutExercise", "WorkoutExercise")
-                        .WithMany("Sets")
-                        .HasForeignKey("WorkoutExerciseWorkoutId", "WorkoutExerciseExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WorkoutExercise");
-                });
-
             modelBuilder.Entity("backend.Models.Exercise", b =>
                 {
                     b.Navigation("WorkoutExercises");
@@ -177,11 +117,6 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Workout", b =>
                 {
                     b.Navigation("WorkoutExercises");
-                });
-
-            modelBuilder.Entity("backend.Models.WorkoutExercise", b =>
-                {
-                    b.Navigation("Sets");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,6 +17,8 @@ namespace backend.Data
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Workout> Workouts { get; set; }
         public DbSet<WorkoutExercise> WorkoutExercises { get; set; }
+        public DbSet<WorkoutExerciseSet> WorkoutExerciseSets { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,5 +35,7 @@ namespace backend.Data
                 .WithMany(e => e.WorkoutExercises)
                 .HasForeignKey(we => we.ExerciseId);
         }
+
+        
     }
 }

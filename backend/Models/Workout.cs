@@ -9,7 +9,7 @@ namespace backend.Models
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.UtcNow;
 
         public ICollection<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
 
