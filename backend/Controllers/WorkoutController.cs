@@ -40,6 +40,7 @@ namespace backend.Controllers
             return Ok(workoutDtos);
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetWorkoutById(int id)
         {
@@ -57,6 +58,7 @@ namespace backend.Controllers
             return Ok(workoutDto);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateWorkout([FromBody] CreateWorkoutDto workoutDto)
         {
@@ -72,6 +74,7 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetWorkoutById), new { id = workoutModel.Id }, workoutModel.ToWorkoutDto());
         }
 
+        [Authorize]
         [HttpPost]
         [Route("{workoutId:int}/addExercise")]
         public async Task<IActionResult> AddExerciseToWorkout([FromRoute] int workoutId, [FromBody] WorkoutExerciseDto workoutExerciseDto)
@@ -102,7 +105,8 @@ namespace backend.Controllers
 
             return Ok(workout.ToWorkoutDto());
         }
-
+        
+        [Authorize]
         [HttpPost]
         [Route("{workoutId:int}/exercise/{exerciseId:int}/addSet")]
 

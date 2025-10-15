@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20251010173822_User")]
-    partial class User
+    [Migration("20251015130421_AdminUser")]
+    partial class AdminUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,20 +41,27 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Exercises");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -65,6 +72,15 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "de93e1dc-4452-46f1-9972-1b8e3f9a6c01",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGISEaYscvdFEaxVkdCeDSub5s6v+DqaUyIVpX03YJHZrFmdo0Dr14XnKpo0kLwn1g==",
+                            Role = "Admin",
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("backend.Models.Workout", b =>
@@ -82,7 +98,13 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Workouts");
                 });
@@ -98,9 +120,14 @@ namespace backend.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("integer");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
                     b.HasKey("WorkoutId", "ExerciseId");
 
                     b.HasIndex("ExerciseId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("WorkoutExercises");
                 });
@@ -138,6 +165,28 @@ namespace backend.Migrations
                     b.ToTable("WorkoutExerciseSets");
                 });
 
+            modelBuilder.Entity("backend.Models.Exercise", b =>
+                {
+                    b.HasOne("backend.Models.User", "User")
+                        .WithMany("Exercises")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Models.Workout", b =>
+                {
+                    b.HasOne("backend.Models.User", "User")
+                        .WithMany("Workouts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("backend.Models.WorkoutExercise", b =>
                 {
                     b.HasOne("backend.Models.Exercise", "Exercise")
@@ -145,6 +194,10 @@ namespace backend.Migrations
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("backend.Models.User", null)
+                        .WithMany("WorkoutExercises")
+                        .HasForeignKey("UserId");
 
                     b.HasOne("backend.Models.Workout", "Workout")
                         .WithMany("WorkoutExercises")
@@ -171,6 +224,15 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.Exercise", b =>
                 {
                     b.Navigation("WorkoutExercises");
+                });
+
+            modelBuilder.Entity("backend.Models.User", b =>
+                {
+                    b.Navigation("Exercises");
+
+                    b.Navigation("WorkoutExercises");
+
+                    b.Navigation("Workouts");
                 });
 
             modelBuilder.Entity("backend.Models.Workout", b =>

@@ -11,5 +11,8 @@ namespace backend.Models
         public string Name { get; set; } = string.Empty;
         public string MuscleGroup { get; set; } = string.Empty;
         public ICollection<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
+
+        public string UserId { get; set; } = null!;
+        public User User { get; set; } = null!;
     }
 }

@@ -13,6 +13,9 @@ namespace backend.Models
 
         public ICollection<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
 
+        public string UserId { get; set; } = null!;
+        public User User { get; set; } = null!;
+
 
     }
 }

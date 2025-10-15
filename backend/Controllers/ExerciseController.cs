@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Mappers;
 using backend.Dtos;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -21,6 +23,7 @@ namespace backend.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetExercises()
         {
@@ -36,6 +39,7 @@ namespace backend.Controllers
             return Ok(exerciseDtos);
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
 
         public async Task<IActionResult> GetExerciseById(int id)
@@ -52,6 +56,7 @@ namespace backend.Controllers
             return Ok(exerciseDto);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateExercise([FromBody] CreateExerciseDto exerciseDto)
         {
@@ -60,7 +65,10 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
+
             var exerciseModel = exerciseDto.ToExerciseFromCreateDto();
+
+            exerciseModel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             _context.Exercises.Add(exerciseModel);
             await _context.SaveChangesAsync();
@@ -68,6 +76,7 @@ namespace backend.Controllers
             return CreatedAtAction(nameof(GetExerciseById), new { id = exerciseModel.Id }, exerciseModel.ToExerciseDto());
         }
 
+        [Authorize]
         [HttpPut]
         [Route("{id:int}")]
 
@@ -92,7 +101,8 @@ namespace backend.Controllers
 
             return Ok(existingExercise.ToExerciseDto());
         }
-
+        
+        [Authorize]
         [HttpDelete]
         [Route("{id:int}")] 
 

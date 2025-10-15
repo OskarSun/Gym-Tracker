@@ -27,7 +27,7 @@ namespace backend.Mappers
                 MuscleGroup = createExerciseDto.MuscleGroup
             };
         }
-        
+
         public static Exercise ToExerciseFromUpdateDto(this UpdateExerciseDto updateExerciseDto)
         {
             return new Exercise
@@ -36,5 +36,7 @@ namespace backend.Mappers
                 MuscleGroup = updateExerciseDto.MuscleGroup
             };
         }
+        
+        
     }
 }

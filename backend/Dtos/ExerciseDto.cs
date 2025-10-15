@@ -15,6 +15,7 @@ namespace backend.Dtos
 
     public class CreateExerciseDto
     {
+
         [Required]
         public string Name { get; set; } = string.Empty;
 
