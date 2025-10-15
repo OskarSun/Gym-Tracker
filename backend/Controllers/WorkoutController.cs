@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using backend.Data;
 using backend.Dtos;
@@ -67,6 +68,7 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
             var workoutModel = workoutDto.ToWorkoutFromCreateDto();
+            workoutModel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("User ID not found in token.");
 
             _context.Workouts.Add(workoutModel);
             await _context.SaveChangesAsync();
@@ -77,7 +79,7 @@ namespace backend.Controllers
         [Authorize]
         [HttpPost]
         [Route("{workoutId:int}/addExercise")]
-        public async Task<IActionResult> AddExerciseToWorkout([FromRoute] int workoutId, [FromBody] WorkoutExerciseDto workoutExerciseDto)
+        public async Task<IActionResult> AddExerciseToWorkout([FromRoute] int workoutId, [FromBody] AddExerciseToWorkoutDto workoutExerciseDto)
         {
             var workout = await _context.Workouts
                 .Include(w => w.WorkoutExercises)

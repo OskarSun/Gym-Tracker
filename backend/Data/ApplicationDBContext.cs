@@ -23,7 +23,7 @@ namespace backend.Data
         public DbSet<WorkoutExerciseSet> WorkoutExerciseSets { get; set; }
         public DbSet<User> Users { get; set; }
 
-        private string CurrentUserId => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        private string CurrentUserId => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         private bool IsAdmin => _httpContextAccessor.HttpContext?.User.IsInRole("Admin") ?? false;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

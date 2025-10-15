@@ -23,5 +23,14 @@ namespace backend.Mappers
             };
         }
 
+        public static WorkoutExerciseDto AddExerciseToWorkout(this AddExerciseToWorkoutDto addExerciseDto)
+        {
+            return new WorkoutExerciseDto
+            {
+                ExerciseId = addExerciseDto.ExerciseId,
+                Sets = new List<WorkoutExerciseSetDto>()
+            };
+        }
+
     }
 }

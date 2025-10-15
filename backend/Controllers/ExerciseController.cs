@@ -68,7 +68,7 @@ namespace backend.Controllers
 
             var exerciseModel = exerciseDto.ToExerciseFromCreateDto();
 
-            exerciseModel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            exerciseModel.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new Exception("User ID not found in token.");
 
             _context.Exercises.Add(exerciseModel);
             await _context.SaveChangesAsync();
