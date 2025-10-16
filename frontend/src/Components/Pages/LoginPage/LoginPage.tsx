@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import { useAuth } from "../../../Context/UseAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
 
 type Props = {}
 
@@ -17,6 +18,7 @@ const validation = Yup.object().shape({
 })
 
 const LoginPage = (props: Props) => {
+    const navigate = useNavigate();
     const { loginUser } = useAuth();
     const {
     register,
@@ -28,7 +30,9 @@ const LoginPage = (props: Props) => {
     loginUser(data.username, data.password);
   };
     
-
+  const signUp = () => {
+    navigate("/register");
+  }
 
   return (
     <div>
@@ -46,7 +50,13 @@ const LoginPage = (props: Props) => {
           {errors.password && <p>{errors.password.message}</p>}
         </div>
 
-        <button type="submit">Login</button>
+        <div>
+          <button type="submit">Login</button>
+          </div>
+        <div>
+          <button onClick={signUp}>Sign Up</button>
+        </div>
+        
       </form>
     </div>
   ); 
