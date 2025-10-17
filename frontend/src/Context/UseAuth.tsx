@@ -53,6 +53,7 @@ export const UserProvider = ({ children }: Props) => {
         } catch (err: any) {
             console.error(err);
             toast.error(err?.response?.data || "Registration failed");
+            return;
         }
     }
 
@@ -71,6 +72,7 @@ export const UserProvider = ({ children }: Props) => {
         } catch (err: any) {
             console.error(err);
             toast.error(err?.response?.data || "Login failed");
+            return; 
         }
     };
 

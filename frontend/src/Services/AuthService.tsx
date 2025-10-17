@@ -12,6 +12,7 @@ export const loginAPI = async (username: string, password: string) => {
         return response.data;
     } catch (error) {
         console.error(error);
+        throw error;
     }
 };
 
@@ -24,5 +25,6 @@ export const registerAPI = async (username: string, password: string) => {
         return data;
     } catch (error) {
         console.error(error);
+        throw error;
     }
 };
