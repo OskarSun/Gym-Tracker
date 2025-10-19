@@ -5,9 +5,10 @@ import WorkoutCard from './WorkoutCard';
 type Props = {
     workouts: Workout[];
     onDelete: (id: number) => void;
+    onUpdate: (id: number, name: string) => void;
 }
 
-const WorkoutList = ({workouts, onDelete}: Props) => {
+const WorkoutList = ({workouts, onDelete, onUpdate}: Props) => {
   return (
     <>
     {workouts.length === 0 ? (
@@ -15,7 +16,7 @@ const WorkoutList = ({workouts, onDelete}: Props) => {
       ) : (
         <div>
             {workouts.map((workout) => (
-                <WorkoutCard key={workout.id} workout={workout} onDelete={onDelete}/>
+                <WorkoutCard key={workout.id} workout={workout} onDelete={onDelete} onUpdate={onUpdate}/>
             ))}
         </div>
         )}
