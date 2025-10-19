@@ -137,6 +137,27 @@ namespace backend.Controllers
         }
 
         [Authorize]
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateWorkout(int id, [FromBody] CreateWorkoutDto workoutDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var workout = await _context.Workouts.FindAsync(id);
+            if (workout == null)
+            {
+                return NotFound();
+            }
+
+            workout.Name = workoutDto.Name;
+            await _context.SaveChangesAsync();
+
+            return Ok(workout.ToWorkoutDto());
+        }
+
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteWorkout(int id)
         {
