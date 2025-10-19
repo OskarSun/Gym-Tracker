@@ -107,7 +107,7 @@ namespace backend.Controllers
 
             return Ok(workout.ToWorkoutDto());
         }
-        
+
         [Authorize]
         [HttpPost]
         [Route("{workoutId:int}/exercise/{exerciseId:int}/addSet")]
@@ -134,6 +134,22 @@ namespace backend.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(workoutExercise.ToWorkoutExerciseDto());
+        }
+
+        [Authorize]
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteWorkout(int id)
+        {
+            var workout = await _context.Workouts.FindAsync(id);
+            if (workout == null)
+            {
+                return NotFound();
+            }
+
+            _context.Workouts.Remove(workout);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

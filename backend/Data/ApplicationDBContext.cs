@@ -35,6 +35,7 @@ namespace backend.Data
                 .HasOne(we => we.Workout)
                 .WithMany(w => w.WorkoutExercises)
                 .HasForeignKey(we => we.WorkoutId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(false);
 
             modelBuilder.Entity<WorkoutExercise>()
