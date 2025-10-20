@@ -12,11 +12,12 @@ namespace backend.Dtos
         public ICollection<WorkoutExerciseSetDto> Sets { get; set; } = new List<WorkoutExerciseSetDto>();
 
     }
-    
+
     public class AddExerciseToWorkoutDto
     {
         [Required]
         public int ExerciseId { get; set; }
     }
+    
 
 }

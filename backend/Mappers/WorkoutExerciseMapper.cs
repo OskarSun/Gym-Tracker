@@ -16,6 +16,7 @@ namespace backend.Mappers
                 ExerciseId = workoutExercise.ExerciseId,
                 Sets = workoutExercise.Sets.Select(s => new WorkoutExerciseSetDto
                 {
+                    Id = s.Id,
                     Reps = s.Reps,
                     Weight = s.Weight,
                     IsWarmUp = s.IsWarmUp
@@ -31,6 +32,7 @@ namespace backend.Mappers
                 Sets = new List<WorkoutExerciseSetDto>()
             };
         }
+
 
     }
 }

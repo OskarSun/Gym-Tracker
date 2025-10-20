@@ -47,6 +47,7 @@ namespace backend.Controllers
         {
             var workout = await _context.Workouts
                 .Include(w => w.WorkoutExercises)
+                    .ThenInclude(we => we.Sets)
                 .FirstOrDefaultAsync(w => w.Id == id);
 
             if (workout == null)
@@ -74,66 +75,6 @@ namespace backend.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetWorkoutById), new { id = workoutModel.Id }, workoutModel.ToWorkoutDto());
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("{workoutId:int}/addExercise")]
-        public async Task<IActionResult> AddExerciseToWorkout([FromRoute] int workoutId, [FromBody] AddExerciseToWorkoutDto workoutExerciseDto)
-        {
-            var workout = await _context.Workouts
-                .Include(w => w.WorkoutExercises)
-                .FirstOrDefaultAsync(w => w.Id == workoutId);
-
-            if (workout == null)
-            {
-                return NotFound(new { Message = "Workout not found" });
-            }
-
-            var exercise = await _context.Exercises.FindAsync(workoutExerciseDto.ExerciseId);
-            if (exercise == null)
-            {
-                return NotFound(new { Message = "Exercise not found" });
-            }
-
-            var workoutExercise = new Models.WorkoutExercise
-            {
-                WorkoutId = workoutId,
-                ExerciseId = workoutExerciseDto.ExerciseId,
-            };
-
-            workout.WorkoutExercises.Add(workoutExercise);
-            await _context.SaveChangesAsync();
-
-            return Ok(workout.ToWorkoutDto());
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("{workoutId:int}/exercise/{exerciseId:int}/addSet")]
-
-        public async Task<IActionResult> AddSetToExerciseInWorkout([FromRoute] int workoutId, [FromRoute] int exerciseId, [FromBody] WorkoutExerciseSetDto setDto)
-        {
-            var workoutExercise = await _context.WorkoutExercises
-                .Include(we => we.Sets)
-                .FirstOrDefaultAsync(we => we.WorkoutId == workoutId && we.ExerciseId == exerciseId);
-
-            if (workoutExercise == null)
-            {
-                return NotFound(new { Message = "Workout or Exercise not found in the specified workout" });
-            }
-
-            var newSet = new Models.WorkoutExerciseSet
-            {
-                Reps = setDto.Reps,
-                Weight = setDto.Weight,
-                IsWarmUp = setDto.IsWarmUp
-            };
-
-            workoutExercise.Sets.Add(newSet);
-            await _context.SaveChangesAsync();
-
-            return Ok(workoutExercise.ToWorkoutExerciseDto());
         }
 
         [Authorize]
@@ -172,5 +113,143 @@ namespace backend.Controllers
 
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPost]
+        [Route("{workoutId:int}/addExercise")]
+        public async Task<IActionResult> AddExerciseToWorkout([FromRoute] int workoutId, [FromBody] AddExerciseToWorkoutDto workoutExerciseDto)
+        {
+            var workout = await _context.Workouts
+                .Include(w => w.WorkoutExercises)
+                    .ThenInclude (we => we.Sets)
+                .FirstOrDefaultAsync(w => w.Id == workoutId);
+
+            if (workout == null)
+            {
+                return NotFound(new { Message = "Workout not found" });
+            }
+
+            var exercise = await _context.Exercises.FindAsync(workoutExerciseDto.ExerciseId);
+            if (exercise == null)
+            {
+                return NotFound(new { Message = "Exercise not found" });
+            }
+
+            var workoutExercise = new Models.WorkoutExercise
+            {
+                WorkoutId = workoutId,
+                ExerciseId = workoutExerciseDto.ExerciseId,
+            };
+
+            workout.WorkoutExercises.Add(workoutExercise);
+            await _context.SaveChangesAsync();
+
+            return Ok(workout.ToWorkoutDto());
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("{workoutId:int}/exercise/{exerciseId:int}")]
+
+        public async Task<IActionResult> RemoveExerciseFromWorkout([FromRoute] int workoutId, [FromRoute] int exerciseId)
+        {
+            var workoutExercise = await _context.WorkoutExercises
+                .FirstOrDefaultAsync(we => we.WorkoutId == workoutId && we.ExerciseId == exerciseId);
+
+            if (workoutExercise == null)
+            {
+                return NotFound(new { Message = "Workout or Exercise not found in the specified workout" });
+            }
+
+            _context.WorkoutExercises.Remove(workoutExercise);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("{workoutId:int}/exercise/{exerciseId:int}/addSet")]
+
+        public async Task<IActionResult> AddSetToExerciseInWorkout([FromRoute] int workoutId, [FromRoute] int exerciseId, [FromBody] CreateWorkoutExerciseSetDto setDto)
+        {
+            var workoutExercise = await _context.WorkoutExercises
+                .Include(we => we.Sets)
+                .FirstOrDefaultAsync(we => we.WorkoutId == workoutId && we.ExerciseId == exerciseId);
+
+            if (workoutExercise == null)
+            {
+                return NotFound(new { Message = "Workout or Exercise not found in the specified workout" });
+            }
+
+            var newSet = new Models.WorkoutExerciseSet
+            {
+                Reps = setDto.Reps,
+                Weight = setDto.Weight,
+                IsWarmUp = setDto.IsWarmUp
+            };
+
+            workoutExercise.Sets.Add(newSet);
+            await _context.SaveChangesAsync();
+
+            return Ok(workoutExercise.ToWorkoutExerciseDto());
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("{workoutId:int}/exercise/{exerciseId:int}/set/{setId:int}")]
+        public async Task<IActionResult> UpdateSetInExerciseInWorkout([FromRoute] int workoutId, [FromRoute] int exerciseId, [FromRoute] int setId, [FromBody] CreateWorkoutExerciseSetDto setDto)
+        {
+            var workoutExercise = await _context.WorkoutExercises
+                .Include(we => we.Sets)
+                .FirstOrDefaultAsync(we => we.WorkoutId == workoutId && we.ExerciseId == exerciseId);
+
+            if (workoutExercise == null)
+            {
+                return NotFound(new { Message = "Workout or Exercise not found in the specified workout" });
+            }
+
+            var setToUpdate = workoutExercise.Sets.FirstOrDefault(s => s.Id == setId);
+            if (setToUpdate == null)
+            {
+                return NotFound(new { Message = "Set not found" });
+            }
+
+            setToUpdate.Reps = setDto.Reps;
+            setToUpdate.Weight = setDto.Weight;
+            setToUpdate.IsWarmUp = setDto.IsWarmUp;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(setDto);
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("{workoutId:int}/exercise/{exerciseId:int}/set/{setId:int}")]
+        public async Task<IActionResult> RemoveSetFromExerciseInWorkout([FromRoute] int workoutId, [FromRoute] int exerciseId, [FromRoute] int setId)
+        {
+            var workoutExercise = await _context.WorkoutExercises
+                .Include(we => we.Sets)
+                .FirstOrDefaultAsync(we => we.WorkoutId == workoutId && we.ExerciseId == exerciseId);
+
+            if (workoutExercise == null)
+            {
+                return NotFound(new { Message = "Workout or Exercise not found in the specified workout" });
+            }
+
+            var setToRemove = workoutExercise.Sets.FirstOrDefault(s => s.Id == setId);
+            if (setToRemove == null)
+            {
+                return NotFound(new { Message = "Set not found" });
+            }
+
+            workoutExercise.Sets.Remove(setToRemove);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        
     }
 }
