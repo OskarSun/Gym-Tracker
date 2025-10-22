@@ -12,16 +12,17 @@ namespace backend.Mappers
         public static WorkoutExerciseDto ToWorkoutExerciseDto(this WorkoutExercise workoutExercise)
         {
             return new WorkoutExerciseDto
-            {
-                ExerciseId = workoutExercise.ExerciseId,
-                Sets = workoutExercise.Sets.Select(s => new WorkoutExerciseSetDto
                 {
-                    Id = s.Id,
-                    Reps = s.Reps,
-                    Weight = s.Weight,
-                    IsWarmUp = s.IsWarmUp
-                }).ToList()
-            };
+                    ExerciseId = workoutExercise.ExerciseId,
+                    ExerciseName = workoutExercise.Exercise?.Name ?? "Unknown",
+                    Sets = workoutExercise.Sets?.Select(s => new WorkoutExerciseSetDto
+                    {
+                        Id = s.Id,
+                        Reps = s.Reps,
+                        Weight = s.Weight,
+                        IsWarmUp = s.IsWarmUp
+                    }).ToList() ?? new List<WorkoutExerciseSetDto>()
+                };
         }
 
         public static WorkoutExerciseDto AddExerciseToWorkout(this AddExerciseToWorkoutDto addExerciseDto)

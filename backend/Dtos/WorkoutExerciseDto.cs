@@ -9,6 +9,7 @@ namespace backend.Dtos
     public class WorkoutExerciseDto
     {
         public int ExerciseId { get; set; }
+        public string ExerciseName { get; set; } = string.Empty;
         public ICollection<WorkoutExerciseSetDto> Sets { get; set; } = new List<WorkoutExerciseSetDto>();
 
     }

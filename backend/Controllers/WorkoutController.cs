@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using backend.Data;
 using backend.Dtos;
 using backend.Mappers;
+using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ namespace backend.Controllers
             var workouts = await _context.Workouts
             .Include(w => w.WorkoutExercises)
                 .ThenInclude(we => we.Sets)
+            .Include(w => w.WorkoutExercises)
+                .ThenInclude(we => we.Exercise)
             .ToListAsync();
 
             if (workouts == null)
@@ -48,6 +51,8 @@ namespace backend.Controllers
             var workout = await _context.Workouts
                 .Include(w => w.WorkoutExercises)
                     .ThenInclude(we => we.Sets)
+                .Include(w => w.WorkoutExercises)
+                    .ThenInclude(we => we.Exercise)
                 .FirstOrDefaultAsync(w => w.Id == id);
 
             if (workout == null)
@@ -135,7 +140,10 @@ namespace backend.Controllers
                 return NotFound(new { Message = "Exercise not found" });
             }
 
-            var workoutExercise = new Models.WorkoutExercise
+            if (workout.WorkoutExercises == null)
+            workout.WorkoutExercises = new List<WorkoutExercise>();
+
+            var workoutExercise = new WorkoutExercise
             {
                 WorkoutId = workoutId,
                 ExerciseId = workoutExerciseDto.ExerciseId,
@@ -144,7 +152,14 @@ namespace backend.Controllers
             workout.WorkoutExercises.Add(workoutExercise);
             await _context.SaveChangesAsync();
 
-            return Ok(workout.ToWorkoutDto());
+            var updatedWorkout = await _context.Workouts
+                .Include(w => w.WorkoutExercises)
+                    .ThenInclude(we => we.Sets)
+                .Include(w => w.WorkoutExercises)
+                    .ThenInclude(we => we.Exercise)
+                .FirstOrDefaultAsync(w => w.Id == workoutId);
+
+            return Ok(updatedWorkout?.ToWorkoutDto());
         }
 
         [Authorize]
@@ -192,7 +207,15 @@ namespace backend.Controllers
             workoutExercise.Sets.Add(newSet);
             await _context.SaveChangesAsync();
 
-            return Ok(workoutExercise.ToWorkoutExerciseDto());
+            var createdSetDto = new WorkoutExerciseSetDto
+    {
+                Id = newSet.Id,
+                Reps = newSet.Reps,
+                Weight = newSet.Weight,
+                IsWarmUp = newSet.IsWarmUp
+            };
+
+            return Ok(createdSetDto);
         }
 
         [Authorize]
@@ -214,6 +237,7 @@ namespace backend.Controllers
             {
                 return NotFound(new { Message = "Set not found" });
             }
+            
 
             setToUpdate.Reps = setDto.Reps;
             setToUpdate.Weight = setDto.Weight;
@@ -250,6 +274,5 @@ namespace backend.Controllers
             return NoContent();
         }
 
-        
     }
 }
