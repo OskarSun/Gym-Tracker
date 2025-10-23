@@ -11,7 +11,6 @@ const WorkoutDetailsPage = () => {
   const navigate = useNavigate();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
-  const [exerciseId, setExerciseId] = useState<number>(0);
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
@@ -40,7 +39,6 @@ const WorkoutDetailsPage = () => {
     const updatedWorkout = await addExerciseToWorkout(Number(id), exerciseId);
     setWorkout(updatedWorkout);  
     toast.success("Exercise added successfully");
-    setExerciseId(0);
   } catch (error) {
     console.error("Failed to add exercise:", error);
   }
@@ -159,12 +157,7 @@ const WorkoutDetailsPage = () => {
 
       <div>
         <h3>Add Exercise</h3>
-        <input
-          type="number"
-          placeholder="Exercise ID"
-          value={exerciseId}
-          onChange={(e) => setExerciseId(Number(e.target.value))}
-        />
+        
         <button onClick={() => setShowAddModal(true)}>Add Exercise</button>
         {showAddModal && (
           <AddExerciseModal

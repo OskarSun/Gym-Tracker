@@ -1,4 +1,4 @@
-import React from 'react'
+
 import type { CreateWorkoutExerciseSetDto, UpdateWorkoutExerciseSetDto, Workout } from '../../types';
 import WorkoutDetailsCard from './WorkoutDetailsCard';
 
