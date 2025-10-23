@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Workout } from '../../types'
+import { Link } from 'react-router-dom';
 
 type Props = {
   workout: Workout;
@@ -25,9 +26,11 @@ const WorkoutCard = ({workout, onDelete, onUpdate}: Props) => {
   return (
     <>
     <div>
+      <Link to={`/workout/${workout.id}`}>
       {workout.name} - {new Date(workout.date).toLocaleDateString()}
+      </Link>
       <button onClick={handleUpdate}>Edit</button>
-
+      <button onClick={handleDelete}>Delete</button>
       <div> 
         {showForm && (  
         <div>
@@ -42,12 +45,9 @@ const WorkoutCard = ({workout, onDelete, onUpdate}: Props) => {
           }}>Update</button>
         </div>
         )}
+
       </div>
           
-
-      <button onClick={handleDelete}>Delete</button>
-      
-      
     </div>
     
     </>

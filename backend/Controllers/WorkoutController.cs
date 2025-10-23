@@ -245,7 +245,15 @@ namespace backend.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(setDto);
+            var updatedSetDto = new WorkoutExerciseSetDto
+            {
+                Id = setToUpdate.Id,
+                Reps = setToUpdate.Reps,
+                Weight = setToUpdate.Weight,
+                IsWarmUp = setToUpdate.IsWarmUp
+            };
+
+            return Ok(updatedSetDto);
         }
 
         [Authorize]

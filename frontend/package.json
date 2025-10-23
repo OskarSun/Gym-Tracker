@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc --project tsconfig.json && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --host --port 5173",
+  "start": "vite preview --host --port 5173"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
