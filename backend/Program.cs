@@ -94,6 +94,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+if (app.Environment.IsProduction())
+{
+    app.UseDefaultFiles(); // serve index.html
+    app.UseStaticFiles();  // serve files from wwwroot
+}
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
