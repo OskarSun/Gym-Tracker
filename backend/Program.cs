@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("https://gym-tracker-frontend-3uk1.onrender.com", "http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
