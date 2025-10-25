@@ -65,38 +65,74 @@ const handleUpdateWorkout = async (id: number, name: string) => {
 };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+        <p className="text-gray-600 dark:text-gray-300">Loading...</p>
+      </div>
+    )
   } 
   
   
   return (
-    <div>
-      <div><h1>Welcome {user}</h1></div>
-
-      <h2>Your Workouts:</h2>
-
-      <WorkoutList workouts={workouts} onDelete={handleDeleteWorkout} onUpdate={handleUpdateWorkout}/>
-      
-      <div>
-        <button onClick={() => setShowForm(!showForm)}>Add New Workout</button>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col items-center py-10 px-4">
+      <div className="w-full max-w-2xl">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">
+            Welcome, <span>{user}</span> 
+          </h1>
+          <button
+            onClick={logout}
+            className="text-sm bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+          >
+            Logout
+          </button>
         </div>
 
-        {showForm && (
-        <div>
-          <input
-            placeholder="Workout name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          
-          <button onClick={() => handleCreateWorkout(name)}>Add</button>
+        {/* Workouts List */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4">Your Workouts</h2>
+          {workouts.length > 0 ? (
+            <WorkoutList
+              workouts={workouts}
+              onDelete={handleDeleteWorkout}
+              onUpdate={handleUpdateWorkout}
+            />
+          ) : (
+            <p className="text-gray-500">No workouts yet. Add one below!</p>
+          )}
         </div>
-      )}
-      
-      <button onClick={logout}>Logout</button>
 
+        {/* Add New Workout */}
+        <div className="text-center">
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="mb-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition"
+          >
+            {showForm ? "Cancel" : "Add New Workout"}
+          </button>
+
+          {showForm && (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 max-w-md mx-auto">
+              <input
+                type="text"
+                placeholder="Workout name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full p-2.5 mb-4 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              />
+              <button
+                onClick={() => handleCreateWorkout(name)}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                Add Workout
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default HomePage

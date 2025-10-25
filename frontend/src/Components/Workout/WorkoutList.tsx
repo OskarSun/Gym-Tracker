@@ -12,11 +12,20 @@ const WorkoutList = ({workouts, onDelete, onUpdate}: Props) => {
   return (
     <>
     {workouts.length === 0 ? (
-        <p>No workouts found.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-center py-6">
+        No workouts found. Add one to get started!
+      </p>
       ) : (
-        <div>
-            {workouts.map((workout) => (
-                <WorkoutCard key={workout.id} workout={workout} onDelete={onDelete} onUpdate={onUpdate}/>
+        <div className="flex flex-col gap-4">
+          {[...workouts]
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((workout) => (
+              <WorkoutCard
+                key={workout.id}
+                workout={workout}
+                onDelete={onDelete}
+                onUpdate={onUpdate}
+              />
             ))}
         </div>
         )}
