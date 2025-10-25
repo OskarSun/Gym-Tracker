@@ -142,37 +142,74 @@ const WorkoutDetailsPage = () => {
 
 
 
-  if (loading) return <div>Loading workout...</div>;
-  if (!workout) return <div>Workout not found</div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+        <p className="text-gray-600 dark:text-gray-300">Loading workout...</p>
+      </div>
+    );
+  if (!workout)
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+        <p className="text-gray-600 dark:text-gray-300">Workout not found</p>
+      </div>
+    );
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col items-center py-10 px-4">
+      <div className="w-full max-w-3xl flex flex-col gap-6">
+        {/* Header */}
+        <h1 className="text-2xl font-bold mb-4">
+          {workout.name} - {new Date(workout.date).toLocaleDateString()}
+        </h1>
 
-      <WorkoutDetailsList 
-      workout={workout} 
-      onDelete={handleDeleteExercise}
-      onAddSet={handleAddSet} 
-      onUpdateSet={handleUpdateSet}
-      onDeleteSet={handleDeleteSet}/>
-
-      <div>
-        <h3>Add Exercise</h3>
-        
-        <button onClick={() => setShowAddModal(true)}>Add Exercise</button>
-        {showAddModal && (
-          <AddExerciseModal
-            onSelect={async (exerciseId) => {
-              await handleAddExercise(exerciseId);
-              setShowAddModal(false);
-            }}
-            onClose={() => setShowAddModal(false)}
+        {/* Workout Details */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
+          <WorkoutDetailsList
+            workout={workout}
+            onDelete={async (exerciseId) => await handleDeleteExercise(exerciseId)}
+            onAddSet={async (exerciseId, newSet) =>
+              await handleAddSet(exerciseId, newSet)
+            }
+            onUpdateSet={async (exerciseId, setId, updatedSet) =>
+              await handleUpdateSet(exerciseId, setId, updatedSet)
+            }
+            onDeleteSet={async (exerciseId, setId) =>
+              await handleDeleteSet(exerciseId, setId)
+            }
           />
-        )}
-      </div>
-      
-      
+        </div>
 
-      <button onClick={goToHome}>Return</button>
+        {/* Add Exercise */}
+        <div className="flex flex-col items-center gap-3">
+          <h3 className="text-lg font-semibold">Add Exercise</h3>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
+          >
+            Add Exercise
+          </button>
+          {showAddModal && (
+            <AddExerciseModal
+              onSelect={async (exerciseId) => {
+                await handleAddExercise(exerciseId);
+                setShowAddModal(false);
+              }}
+              onClose={() => setShowAddModal(false)}
+            />
+          )}
+        </div>
+
+        {/* Return Button */}
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={goToHome}
+            className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition"
+          >
+            Return to Home
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

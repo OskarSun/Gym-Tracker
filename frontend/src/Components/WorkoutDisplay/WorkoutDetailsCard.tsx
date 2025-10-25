@@ -27,29 +27,48 @@ const WorkoutDetailsCard = ({we, onDelete, onAddSet, onUpdateSet, onDeleteSet}: 
 
   const handleAddSet = () => {
     onAddSet(newSet);
+    setNewSet({ reps: 0, weight: 0, isWarmUp: false });
   }
 
 
   return (
-    <div>
-        Exercise: {we.exerciseName}
-              <ul>
-                {sets.map((set, index) => (
-                  
-                <WorkoutSetCard key={set.id ?? index}
-                set={we.sets ? set : {id:0, reps:0, weight:0, isWarmUp:false}} 
-                onDeleteSet={onDeleteSet} 
-                onUpdateSet={onUpdateSet}
-                />
-          
-                ))}
-              </ul>
-              <div>
-                <button onClick={handleAddSet}>Add Set</button>
-              </div>
-              <button onClick={handleDelete}>Delete Exercise</button>
+    <div className="bg-gray-100 dark:bg-gray-700 rounded-xl shadow-md p-4 flex flex-col gap-4">
+      {/* Exercise Header */}
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          {we.exerciseName}
+        </h3>
+        <button
+          onClick={handleDelete}
+          className="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded-lg transition"
+        >
+          Delete Exercise
+        </button>
+      </div>
+
+      {/* Sets List */}
+      <ul className="flex flex-col gap-2">
+        {sets.map((set, index) => (
+          <WorkoutSetCard
+            key={set.id ?? index}
+            set={we.sets ? set : { id: 0, reps: 0, weight: 0, isWarmUp: false }}
+            onDeleteSet={onDeleteSet}
+            onUpdateSet={onUpdateSet}
+          />
+        ))}
+      </ul>
+
+      {/* Add Set Button */}
+      <div className="mt-2">
+        <button
+          onClick={handleAddSet}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition"
+        >
+          Add Set
+        </button>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default WorkoutDetailsCard
