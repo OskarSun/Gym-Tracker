@@ -57,9 +57,17 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+// Check environment
+var environment = builder.Environment.EnvironmentName;
+
+// Pick connection string
+var connectionString = environment == "Development"
+    ? builder.Configuration.GetConnectionString("LocalConnection")
+    : builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
