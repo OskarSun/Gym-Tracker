@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("https://gym-tracker-frontend-3uk1.onrender.com", "http://localhost:5173")
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -61,9 +61,7 @@ builder.Services.AddSwaggerGen(option =>
 var environment = builder.Environment.EnvironmentName;
 
 // Pick connection string
-var connectionString = environment == "Development"
-    ? builder.Configuration.GetConnectionString("LocalConnection")
-    : builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {

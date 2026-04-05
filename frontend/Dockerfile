@@ -42,6 +42,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 # Copy the rest of the source files into the image.
 COPY . .
+# Ensure .env file exists with correct API URL
+RUN test -f .env || echo "VITE_API_URL=http://localhost:5119/api" > .env
 # Run the build script.
 RUN npm run build
 

@@ -76,7 +76,7 @@ const RegisterPage = () => {
             <input
               type="password"
               id="password"
-              placeholder="••••••••"
+              placeholder=""
               {...register("password")}
               className={`bg-gray-50 border ${
                 errors.password ? "border-red-500" : "border-gray-300"
@@ -101,7 +101,7 @@ const RegisterPage = () => {
             <input
               type="password"
               id="confirmPassword"
-              placeholder="••••••••"
+              placeholder=""
               {...register("confirmPassword")}
               className={`bg-gray-50 border ${
                 errors.confirmPassword ? "border-red-500" : "border-gray-300"

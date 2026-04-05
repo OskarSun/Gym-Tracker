@@ -1,9 +1,9 @@
 import axios from "axios";
 import type { Token, UserData } from "../types";
 
-const api = import.meta.env.MODE === "development"
-? "http://localhost:5119/api"
-: import.meta.env.VITE_API_URL;
+const api = import.meta.env.VITE_API_URL;
+
+console.log("API URL:", import.meta.env.VITE_API_URL);
 
 export const loginAPI = async (username: string, password: string) => {
     try {
